@@ -5,7 +5,7 @@ $(function () {//必须dom加载完成后再执行
 //全局变量，数据源，本地0 或 网络1
 //网络1取实时真实数据
 //本地0可以构建json，随意调整数据
-var datasource =0;
+var datasource =1;
 
 //接口地址
 var webhost = "http://sluapi.blockchaindata.top";

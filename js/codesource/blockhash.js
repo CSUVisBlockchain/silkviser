@@ -1,8 +1,8 @@
 $(function () {
     //==========本文件变量定义 开始
     //数据源，本地0 或 网络1
-    var datasource = 0;//从globalvar.js中获取
-    console.log(datasource);
+    //var datasource = 0;//从globalvar.js中获取
+    //console.log(datasource);
     var datasourcedetail;
     //从url参数中取得hash
     var hash = UrlParam.param("hash");
@@ -27,7 +27,7 @@ $(function () {
     } else {
         datasourcedetail = {
             "url": weburl + "/silkchain/block/" + hash, //要带hash参数
-            "newblock": "/jsondata/indexnew.json"//weburl + "/silkchain/indexnew"
+            "newblock": weburl + "/silkchain/indexnew"
         }
     }
     //构造测试数据，如果请求的参数值在数组中，即使用离线数据
@@ -173,14 +173,17 @@ console.log(result);
                 blockrender(result); //区块详情
                 blockcoin(result);
                 $("#blockdetailTable").unmask();
+                $("#listTableDiv").hide();
 
                 coinfilterrender(result); //铜钱下方选择区 生成databins
                 $("#coin_filter").unmask();
                 initcoinrender(result.txs); //初始铜钱分布 必须在选择区后面
                 $("#coin_glyph").unmask();
+                $("#listTableDiv2").hide();
 
                 txsrender(result.txs); //交易列表
                 $("#txlistTable").unmask();
+                $("#listTableDiv3").hide();
 
                 resultdata = result;//原始全部数据
             },
@@ -205,7 +208,7 @@ console.log(result);
         $("#blocktxsfee").text(data.txfee_sum + " SLU");
         $("#blocksize").text(data.size + " bytes");
         $("#blockversion").text(parseInt(data.version).toString(16)); //转十六进制
-        $("#blockconfirmations").text(211199-data.height+1);//(data.confirmations);//
+        $("#blockconfirmations").text(data.confirmations);//211199-data.height+1);//(
     }
 
     function blockcoin(data) {

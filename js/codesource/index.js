@@ -15,7 +15,7 @@ $(function () {
 			url_fromheight=0;
 		}
 	}
-	url_fromheight=211199;
+	//url_fromheight=211199;
     //设定显示的最新日期，用于测试
     if ("undefined" == typeof url_fromdate) {
 		url_fromdate="";
@@ -30,7 +30,7 @@ $(function () {
 			url_fromdate="";
 		}
 	}
-	url_fromdate="2019-06-12";
+	//url_fromdate="2019-06-12";
 
 	//指定首页显示高度，论文需要
 	var maxblockHeight = url_fromheight,
@@ -45,8 +45,8 @@ $(function () {
 		}
 	} else {
 		datasourcedetail = {
-			"ajaxBlockcount": "/jsondata/indexnew.json",//weburl + "/silkchain/indexnew",
-			"ajaxsvgdata": "/jsondata/indexlimit6.json",//weburl + "/silkchain/index?limit=6&fromheight="+maxblockHeight,
+			"ajaxBlockcount": weburl + "/silkchain/indexnew",
+			"ajaxsvgdata": weburl + "/silkchain/index?limit=6&fromheight="+maxblockHeight,
 			"ajaxtjs30": weburl + "/silkchain/statistics/transactions?days=90"
 		}
 		

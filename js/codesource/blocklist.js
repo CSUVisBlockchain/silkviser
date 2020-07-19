@@ -1,4 +1,16 @@
 $(function () {
+    var pickdate=new Date();
+    $('#datetimepicker1').datetimepicker({
+        format: 'yyyy-mm-dd',
+        autoclose:true,
+        endDate:pickdate,
+        minView: 2,
+        forceParse: true,
+        todayBtn : true
+    }).on('changeDate',function(ev){
+        //console.log(ev.date.format('Y-m-d'));
+        top.location.href = "/block/blocklist.html?blockDate="+ev.date.format('Y-m-d');
+    });
     //==========本文件变量定义 开始
     //数据源，本地0 或 网络1
     //var datasource = 1;从globalvar.js中获取
@@ -24,10 +36,12 @@ $(function () {
             // console.log(encodeURIComponent(info));
             top.location.href = "/info.html?message=" + encodeURIComponent(message);
         }
+        $('#datetimeinput').val(blockDate);
     }else{//如果无，取当日        
         blockDate=blockToday;
+        $('#datetimeinput').val(blockToday);
     }
-    blockDate="2019-06-11";//论文需要
+    //blockDate="2019-06-11";//论文需要
 
     if (datasource == 0) {
         datasourcedetail = {
@@ -41,9 +55,6 @@ $(function () {
         }
     }
 
-    $('#datetimepicker').change(function(){
-        console.log("change");
-    });
     ajaxNewBlock(datasourcedetail.newblock);//显示最新区块高度、交易数和地址数
     ajaxBlocks(datasourcedetail.url,blockToday);//请求数据
     //==========本文件变量定义 结束===============================
@@ -90,9 +101,9 @@ function ajaxBlocks(url,blockToday) {
             }
 
             blocksrender(result);//区块详情
-            $("#hreftoday").attr("href","/block/blocklist.html?blockDate="+blockToday);
-            $("#hrefleft").attr("href","/block/blocklist.html?blockDate="+result.pagination.prev);
-            $("#hrefright").attr("href","/block/blocklist.html?blockDate="+result.pagination.next);
+            // $("#hreftoday").attr("href","/block/blocklist.html?blockDate="+blockToday);
+            // $("#hrefleft").attr("href","/block/blocklist.html?blockDate="+result.pagination.prev);
+            // $("#hrefright").attr("href","/block/blocklist.html?blockDate="+result.pagination.next);
         },
         error: function (err) {
             console.error(err.statusText);
@@ -143,6 +154,7 @@ function blocksrender(data) {
             }
         }]
     });
+    $("#listTableDiv").hide();
 }
 
 function FormatDateTime(UnixTime) {

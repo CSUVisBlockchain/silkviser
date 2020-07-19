@@ -52,7 +52,7 @@ $(function () {
     } else {
         datasourcedetail = {
             "url": weburl + "/addr/" + addr + "?noTxList=1", //要带参数
-            "newblock": "/jsondata/indexnew.json" //weburl + "/silkchain/indexnew"
+            "newblock": weburl + "/silkchain/indexnew"
         }
     }
 
@@ -103,7 +103,7 @@ $(function () {
         }
     } else {
         datasourcedetail6 = {
-            "url": weburl + "/silkchain/addr/" + addr + "/voutxrange"
+            "url": weburl + "/txs/?address="+addr //"/silkchain/addr/" + addr + "/voutxrange"
         }
     }
 
@@ -118,7 +118,7 @@ $(function () {
     // }
     
     //取30天之前的时间戳
-    var source_nowdate = new Date("2019-06-12");//new Date();//取当前时间
+    var source_nowdate = new Date();//new Date("2019-01-12");//取当前时间 
     var source_nowdate1 = source_nowdate.format("m/d/Y");//只要日期
     var source_nowdate2_temp=source_nowdate1 + " 00:00:01";//ie报错，只能用/，不能用-
     var source_nowdate2 = new Date(source_nowdate2_temp)//时间为0点
@@ -133,17 +133,17 @@ $(function () {
             "url": "/jsondata/addrtimesvalue2.json"
         }
     } else {//?from_date_time=1543910352&，默认取30天的数据
-        datasourcedetail8 = { //不限定limit
-            "url": weburl + "/silkchain/addr/" + addr + "/historynew?from_date_time=1560355199"
+        datasourcedetail8 = { //不限定limit ?from_date_time=1560355199
+            "url": weburl + "/silkchain/addr/" + addr + "/historynew"
         }
         // /silubium-api/silkchain/addr/SLUSy37e1vpzSk3pzK1J8z3iMsdVbsTwUo7R/history
     }
 
     //构造测试数据，如果请求的参数值在数组中，即使用离线数据
-    if (testArray.addr.indexOf(addr)>=0){
-        datasourcedetail8.url="/jsontest/addr/history/"+addr+".json";
-        datasourcedetail6.url="/jsontest/addr/voutxrange/"+addr+".json";
-    }
+    // if (testArray.addr.indexOf(addr)>=0){
+    //     datasourcedetail8.url="/jsontest/addr/history/"+addr+".json";
+    //     datasourcedetail6.url="/jsontest/addr/voutxrange/"+addr+".json";
+    // }
 
     //确定整个画图区大小，宽与表格相同，高固定
     var svgw = $(".static_chart").width();// 根据浏览器窗口大小确定画布宽度
@@ -199,6 +199,7 @@ $(function () {
                         // console.log(result.items)
                         tjsvgrender0(result.items);//新图
                         $(".static_chart").unmask();
+                        $("#listTableDiv2").hide();
                     },
                     error: function (err) {
                         console.error(err);
@@ -207,6 +208,7 @@ $(function () {
 
                 addrrender(result);//交易详情
                 $("#addrdetailTable").unmask();
+                $("#listTableDiv").hide();
                 
                 //more
                 $('.moreshow').addClass('tt'); //默认隐藏不显示
@@ -258,11 +260,12 @@ $(function () {
         $.ajax({
             type: "get",
             async: true, // 异步请求
-            url: datasourcedetail6.url + "?limit=50&fromtime="+source_cxtime03,
+            url: datasourcedetail6.url, //+ "?limit=50&fromtime="+source_cxtime03,
             success: function (result) {
                 // console.log(result);
                 addrtxslistTable(result);//交易详情
                 $("#addrtxslistTable").unmask();
+                $("#listTableDiv3").hide();
             },
             error: function (err) {
                 console.error(err);
@@ -289,8 +292,8 @@ $(function () {
         // console.log(data);
         $("#addrtxslistTable").bootstrapTable('destroy');  //先初始化一次
         $('#addrtxslistTable').bootstrapTable({
-            data: data.items,
-            pagination: true,  //默认显示10页
+            data: data.txs,//data.items,
+            pagination: false,  //默认显示10页
             columns: [{
                 title: $.i18n.prop('bt-txid'),
                 field: 'txid',
@@ -303,22 +306,23 @@ $(function () {
                 title: $.i18n.prop('bt-confirmations'),
                 field: 'confirmations', //新接口将去掉，改为最新高度减去高度
                 align: 'center',
-                sortable: true,
-                // ,formatter: function (value, row, index) {
-                //     if 
-                //     var str = "<a href='/transaction/txid.html?txid=" + value + "'>" + value + "</a>";
-                //     return str;
-                // }
+                sortable: true
             }, {
                 title: $.i18n.prop('bt-vin_count'),
-                field: 'vins',
+                field: 'vin',
                 align: 'center',
                 sortable: true,
+                formatter: function (value, row, index) {
+                    return value.length;
+                }
             }, {
                 title: $.i18n.prop('bt-vout_count'),
-                field: 'vouts',
+                field: 'vout',
                 align: 'center',
                 sortable: true,
+                formatter: function (value, row, index) {
+                    return value.length;
+                }
             }, {
                 title: $.i18n.prop('bt-time'),
                 field: 'time',
@@ -326,12 +330,8 @@ $(function () {
                 sortable: true,
                 formatter: function (value, row, index) {
                     return cnen_timeformater(value);
-                    // var timestr = new Date(1000 * value);
-                    // timestr = timestr + "";//转为字符
-                    // return timestr.replace("(中国标准时间)", "");
                 }
             }]
-
         });
     }
 

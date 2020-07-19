@@ -28,7 +28,7 @@ $(function () {
     } else {
         datasourcedetail = {
             "url": weburl + "/tx/" + hash, //要带hash参数
-            "newblock": "/jsondata/indexnew.json" //weburl + "/silkchain/indexnew"
+            "newblock": weburl + "/silkchain/indexnew"
         }
     }
     if (datasource == 0) {
@@ -82,6 +82,7 @@ $(function () {
 
                 txidrender(result);//交易详情
                 $("#txdetailTable").unmask();
+                $("#listTableDiv").hide();
                 //more
                 $('.moreshow').addClass('tt'); //默认隐藏不显示
                 var ojbk = true;
@@ -100,9 +101,11 @@ $(function () {
 
                 voutrender(result);//输出
                 $("#voutslistTable").unmask();
+                $("#listTableDiv3").hide();
 
                 svgrender(result);//d3图形
                 $("#coin_glyph").unmask();
+                $("#listTableDiv2").hide();
             },
             error: function (err) {
                 console.error(err);
@@ -132,7 +135,7 @@ $(function () {
         $("#blockhash_href").attr("href", "/block/blockhash.html?hash=" + data.blockhash);
         $("#time").text(cnen_timeformater(data.time));
         $("#size").text(data.size+' bytes');
-        $("#confirmations").text(211199-data.blockheight+1);//(data.confirmations);//
+        $("#confirmations").text(data.confirmations);//211199-data.blockheight+1);//(
         $("#vins").text(data.vin.length);
         $("#vouts").text(data.vout.length);
         $("#totalInput").text(data.valueIn + " SLU");
