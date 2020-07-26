@@ -26,6 +26,21 @@ $(function () {
 
     //从url参数中取得hash
     var addr = UrlParam.param("addr");
+    var url_fromdate = UrlParam.param("fromdate");
+    //设定显示的最新日期，用于测试
+    if ("undefined" == typeof url_fromdate) {
+		url_fromdate="";
+	}else{
+		try{
+			var t_regu =/^[2][0][0-9]{2}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}$/;
+			var t_re = new RegExp(t_regu);
+			if (!t_re.test(url_fromdate)) {//不符合
+				url_fromdate="";
+			}
+		}catch(e){
+			url_fromdate="";
+		}
+	}
     //区块hash长度固定为：64位，如果无hash参数，或不是64位
     if (("undefined" == typeof addr) || (addr.length != 36)) {
         //判断兼容/address/{address}
@@ -102,8 +117,14 @@ $(function () {
             "url": "/jsondata/addrVoutxrange.json"
         }
     } else {
-        datasourcedetail6 = {
-            "url": weburl + "/txs/?address="+addr //"/silkchain/addr/" + addr + "/voutxrange"
+        if (url_fromdate=="2019-06-12"){
+            datasourcedetail6 = {
+                "url": "/jsondata/txsaddr20190612.json"
+            }
+        }else{
+            datasourcedetail6 = {
+                "url": weburl + "/txs/?address="+addr //"/silkchain/addr/" + addr + "/voutxrange"
+            }
         }
     }
 
@@ -118,7 +139,12 @@ $(function () {
     // }
     
     //取30天之前的时间戳
-    var source_nowdate = new Date();//new Date("2019-01-12");//取当前时间 
+    var source_nowdate;
+    if (url_fromdate.length>0){
+        source_nowdate= new Date(url_fromdate);//取当前时间
+    }else{
+        source_nowdate= new Date();//new Date("2019-01-12");//取当前时间 
+    }
     var source_nowdate1 = source_nowdate.format("m/d/Y");//只要日期
     var source_nowdate2_temp=source_nowdate1 + " 00:00:01";//ie报错，只能用/，不能用-
     var source_nowdate2 = new Date(source_nowdate2_temp)//时间为0点
@@ -132,9 +158,19 @@ $(function () {
         datasourcedetail8 = {
             "url": "/jsondata/addrtimesvalue2.json"
         }
-    } else {//?from_date_time=1543910352&，默认取30天的数据
-        datasourcedetail8 = { //不限定limit ?from_date_time=1560355199
-            "url": weburl + "/silkchain/addr/" + addr + "/historynew"
+    } else {
+        if (url_fromdate=="2019-06-12"){
+            datasourcedetail8 = {
+                "url": "/jsondata/historynew20190612.json"
+            }
+        }else if (url_fromdate.length>0){
+            datasourcedetail8 = { //不限定limit ?from_date_time=1560355199
+                "url": weburl + "/silkchain/addr/" + addr + "/historynew?from_date_time="+source_cxtime0
+            }
+        }else{
+            datasourcedetail8 = {
+                "url": weburl + "/silkchain/addr/" + addr + "/historynew"
+            }
         }
         // /silubium-api/silkchain/addr/SLUSy37e1vpzSk3pzK1J8z3iMsdVbsTwUo7R/history
     }

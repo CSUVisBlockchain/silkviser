@@ -50,11 +50,15 @@ $(function () {
 			"ajaxtjs30": weburl + "/silkchain/statistics/transactions?days=90"
 		}
 		
-		if (url_fromheight>0){
+		if (url_fromheight=="211199"){
 			datasourcedetail.ajaxsvgdata="/jsondata/indexlimit6.json"; //weburl + "/silkchain/index?limit=6&fromheight="+url_fromheight;
 		}
 		if (url_fromdate.length>0){
-			datasourcedetail.ajaxtjs30=weburl + "/silkchain/statistics/transactions?days=90&fromdate="+url_fromdate;
+			if (url_fromdate=="2019-06-12"){
+				datasourcedetail.ajaxtjs30="/jsondata/txsday20190612.json";
+			}else{
+				datasourcedetail.ajaxtjs30=weburl + "/silkchain/statistics/transactions?days=90&fromdate="+url_fromdate;
+			}
 		}
 	}
 
@@ -191,7 +195,7 @@ $(function () {
 			async: true, // 异步请求
 			url: datasourcedetail.ajaxsvgdata,// 取最新6个块的数据
 			success: function (result) {
-				console.log(result);
+				//console.log(result);
 				
 				//item中包括的交易数，第一个区块是空的，去掉
 				for (let index = 0; index < result.items.length; index++) {
@@ -502,7 +506,7 @@ $(function () {
 					'height', barheight).attr('fill-opacity', 0.2);// 占比背景
 		// 区块使用占比，最大为8M，分为10段
 		var blocksizeshow = data.items[blockNo - 1].size;
-		console.log(blocksizeshow)
+		//console.log(blocksizeshow)
 		blocksizeshow = blocksizeshow.toFixed(0);
 		var gper =  data.items[blockNo - 1].size / 8000000;//实际比例
 		// gper = Math.ceil(gper);//按高进位
